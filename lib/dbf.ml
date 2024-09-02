@@ -210,10 +210,15 @@ let column_setter header field_pos { field_type ; field_length ; _ } =
     Col {
       elts = Array.make header.nrecords 0. ;
       of_cstruct = (fun x ->
-          Cstruct.sub x field_pos field_length
-          |> Cstruct.to_string
-          |> String.trim
-          |> Float.of_string
+          let s =
+            Cstruct.sub x field_pos field_length
+            |> Cstruct.to_string
+            |> String.trim in
+          if String.length s = 0 || s.[0] == '*' then (
+            Printf.eprintf "Skipping NULL (%S)\n%!" s ;
+            Float.nan
+          ) else
+            Float.of_string s
         ) ;
       to_column = fun elts -> Float_data elts ;
     } ;
