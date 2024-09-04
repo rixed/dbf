@@ -203,6 +203,7 @@ let column_setter header field_pos { field_type ; field_length ; _ } =
           of_cstruct = (fun x ->
               Cstruct.sub x field_pos field_length
               |> Cstruct.to_string
+              |> string_of_cstring
               |> String.trim
             ) ;
           to_column = fun elts -> String_data elts }
@@ -213,6 +214,7 @@ let column_setter header field_pos { field_type ; field_length ; _ } =
           let s =
             Cstruct.sub x field_pos field_length
             |> Cstruct.to_string
+            |> string_of_cstring
             |> String.trim in
           if String.length s = 0 || s.[0] == '*' then (
             Printf.eprintf "Skipping NULL (%S)\n%!" s ;
